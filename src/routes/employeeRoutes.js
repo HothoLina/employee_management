@@ -10,13 +10,28 @@ const {
     deleteEmployee
 } = require("../controllers/employeeController");
 
-router.post("/", createEmployee);
+const {
+    employeeValidationRules,
+    validate
+} = require("../middlewares/employeeValidation");
+
+router.post(
+    "/",
+    employeeValidationRules,
+    validate,
+    createEmployee
+);
 
 router.get("/", getAllEmployees);
 
 router.get("/:id", getEmployeeById);
 
-router.put("/:id", updateEmployee);
+router.put(
+    "/:id",
+    employeeValidationRules,
+    validate,
+    updateEmployee
+);
 
 router.delete("/:id", deleteEmployee);
 

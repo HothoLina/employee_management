@@ -1,6 +1,6 @@
 const db = require("../config/db");
 
-const createEmployee = (employee, callback) => {
+const createEmployee = async (employee) => {
     const { name, email, department, salary } = employee;
 
     const query = `
@@ -9,48 +9,53 @@ const createEmployee = (employee, callback) => {
         VALUES (?, ?, ?, ?)
     `;
 
-    db.query(
+    const [result] = await db.execute(
         query,
-        [name, email, department, salary],
-        callback
+        [name, email, department, salary]
     );
+
+    return result;
 };
 
-const getAllEmployees = (callback) => {
-    const query = "SELECT * FROM employees";
+const getAllEmployees = async () => {
+    const [rows] = await db.execute(
+        "SELECT * FROM employees"
+    );
 
-    db.query(query, callback);
+    return rows;
 };
 
-const getEmployeeById = (id, callback) => {
-    const query = "SELECT * FROM employees WHERE id = ?";
+const getEmployeeById = async (id) => {
+    const [rows] = await db.execute(
+        "SELECT * FROM employees WHERE id = ?",
+        [id]
+    );
 
-    db.query(query, [id], callback);
+    return rows;
 };
 
-const updateEmployee = (id, employee, callback) => {
+const updateEmployee = async (id, employee) => {
     const { name, email, department, salary } = employee;
 
-    const query = `
+    const [result] = await db.execute(
+        `
         UPDATE employees
         SET name = ?, email = ?, department = ?, salary = ?
         WHERE id = ?
-    `;
-
-    db.query(
-        query,
-        [name, email, department, salary, id],
-        callback
+        `,
+        [name, email, department, salary, id]
     );
+
+    return result;
 };
 
-const deleteEmployee = (id, callback) => {
-    const query = `
-        DELETE FROM employees
-        WHERE id = ?
-    `;
+const deleteEmployee = async (id) => {
+    const [result] = await db.execute(
+        "DELETE FROM employees WHERE id = ?",
+        [id]
+    );
 
-    db.query(query, [id], callback);
+    return result;
 };
 
 module.exports = {

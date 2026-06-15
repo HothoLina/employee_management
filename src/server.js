@@ -1,9 +1,10 @@
 const express = require("express");
 require("dotenv").config();
 
-const db = require("./config/db");
-
 const employeeRoutes = require("./routes/employeeRoutes");
+const errorHandler = require("./middlewares/errorHandler");
+
+require("./config/db");
 
 const app = express();
 
@@ -14,6 +15,8 @@ app.get("/", (req, res) => {
 });
 
 app.use("/employees", employeeRoutes);
+
+app.use(errorHandler);
 
 const PORT = process.env.PORT || 3000;
 

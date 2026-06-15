@@ -1,80 +1,94 @@
 const employeeModel = require("../models/employeeModel");
+const {
+    successResponse
+} = require("../utils/apiResponse");
 
-const createEmployee = (req, res) => {
-    employeeModel.createEmployee(req.body, (err, result) => {
-        if (err) {
-            return res.status(500).json({
-                error: err.message
-            });
-        }
+const createEmployee = async (req, res, next) => {
+    try {
+        const result =
+            await employeeModel.createEmployee(req.body);
 
-        res.status(201).json({
-            message: "Employee created successfully",
-            employeeId: result.insertId
-        });
-    });
+        successResponse(
+            res,
+            201,
+            "Employee created successfully",
+            { employeeId: result.insertId }
+        );
+
+    } catch (error) {
+        next(error);
+    }
 };
 
-const getAllEmployees = (req, res) => {
-    employeeModel.getAllEmployees((err, results) => {
-        if (err) {
-            return res.status(500).json({
-                error: err.message
-            });
-        }
+const getAllEmployees = async (req, res, next) => {
+    try {
+        const employees =
+            await employeeModel.getAllEmployees();
 
-        res.status(200).json(results);
-    });
+        successResponse(
+            res,
+            200,
+            "Employees retrieved successfully",
+            employees
+        );
+
+    } catch (error) {
+        next(error);
+    }
 };
 
-const getEmployeeById = (req, res) => {
-    const id = req.params.id;
+const getEmployeeById = async (req, res, next) => {
+    try {
+        const employee =
+            await employeeModel.getEmployeeById(
+                req.params.id
+            );
 
-    employeeModel.getEmployeeById(id, (err, results) => {
-        if (err) {
-            return res.status(500).json({
-                error: err.message
-            });
-        }
+        successResponse(
+            res,
+            200,
+            "Employee retrieved successfully",
+            employee
+        );
 
-        res.status(200).json(results);
-    });
+    } catch (error) {
+        next(error);
+    }
 };
 
-const updateEmployee = (req, res) => {
-    const id = req.params.id;
+const updateEmployee = async (req, res, next) => {
+    try {
+        await employeeModel.updateEmployee(
+            req.params.id,
+            req.body
+        );
 
-    employeeModel.updateEmployee(
-        id,
-        req.body,
-        (err, result) => {
-            if (err) {
-                return res.status(500).json({
-                    error: err.message
-                });
-            }
+        successResponse(
+            res,
+            200,
+            "Employee updated successfully"
+        );
 
-            res.status(200).json({
-                message: "Employee updated successfully"
-            });
-        }
-    );
+    } catch (error) {
+        next(error);
+    }
 };
 
-const deleteEmployee = (req, res) => {
-    const id = req.params.id;
+const deleteEmployee = async (req, res, next) => {
+    try {
+        await employeeModel.deleteEmployee(
+            req.params.id
+        );
 
-    employeeModel.deleteEmployee(id, (err, result) => {
-        if (err) {
-            return res.status(500).json({
-                error: err.message
-            });
-        }
+        successResponse(
+            res,
+            200,
+            "Employee deleted successfully"
+        );
 
-        res.status(200).json({
-            message: "Employee deleted successfully"
-        });
-    });
+    } catch (error) {
+        next(error);
+    }
 };
 
 module.exports = {
